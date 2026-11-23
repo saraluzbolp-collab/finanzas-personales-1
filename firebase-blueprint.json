@@ -1,0 +1,131 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Perfil privado y configuración del presupuesto mensual de un usuario.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "ID único del usuario en Firebase Auth.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Nombre visible del usuario.",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Correo electrónico del usuario.",
+          "maxLength": 254
+        },
+        "monthlyBudget": {
+          "type": "number",
+          "description": "Presupuesto mensual configurado por el usuario en COP."
+        },
+        "hasConfiguredBudget": {
+          "type": "boolean",
+          "description": "Indica si el usuario ya completó la configuración inicial de su presupuesto mensual."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Fecha de creación del perfil en el servidor."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Fecha de última actualización en el servidor."
+        }
+      },
+      "required": [
+        "uid",
+        "displayName",
+        "monthlyBudget",
+        "hasConfiguredBudget",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Movement": {
+      "title": "Movement",
+      "description": "Registro de gasto o ingreso perteneciente exclusivamente a un usuario.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "UID del propietario del movimiento.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Monto del movimiento en COP (mayor que cero)."
+        },
+        "category": {
+          "type": "string",
+          "description": "Categoría del gasto o ingreso.",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "date": {
+          "type": "string",
+          "description": "Fecha del movimiento.",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "description": {
+          "type": "string",
+          "description": "Descripción breve del movimiento.",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "type": {
+          "type": "string",
+          "description": "Tipo de movimiento.",
+          "enum": ["expense", "income"]
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "Medio de pago utilizado (opcional).",
+          "maxLength": 60
+        },
+        "observations": {
+          "type": "string",
+          "description": "Observaciones adicionales (opcional).",
+          "maxLength": 500
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Marca de tiempo de creación en el servidor."
+        }
+      },
+      "required": [
+        "uid",
+        "amount",
+        "category",
+        "date",
+        "description",
+        "type",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Documento privado del usuario con su presupuesto mensual."
+    },
+    "/users/{userId}/movements/{movementId}": {
+      "schema": { "$ref": "#/entities/Movement" },
+      "description": "Subcolección privada de gastos e ingresos del usuario."
+    }
+  }
+}
